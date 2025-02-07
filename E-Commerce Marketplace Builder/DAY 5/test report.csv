@@ -1,0 +1,7 @@
+Test Case ID,Test Case Description,Test Steps,Expected Result,Actual Result,Status,Severity,Remarks,
+TC001,Validate Product Listing Page,Open product page > Verify product details,Products are displayed correctly with accurate data,Passed: All products loaded with correct details,Passed,High,Functionality meets requirements,
+TC002,Test API Error Handling,Disconnect API > Refresh page,Fallback UI appears with an error message,Passed: Error handled gracefully with a fallback UI,Passed,High,Error scenarios are managed effectively,
+TC003,Verify Cart Functionality,Add product to cart > Verify cart contents,Cart updates in real-time with the correct total,Passed: Cart updates accurately with new products,Passed,High,User experience is seamless,
+TC004,Validate Checkout Process,Complete checkout process > Confirm order,Order confirmation and secure payment processing,Passed: Order processed and confirmed without errors,Passed,High,Secure and efficient checkout process,
+TC005,Validate Search Functionality,search any product on searchbar,products shown immediately after typing any word,Passed:Product shown after typing,Passed,Medium,Enchance user experience and help in finding products,
+TC006,Test Responsiveness on Mobile,Resize browser window > Verify layout adjustments,Layout adapts properly across different screen sizes,Passed: Responsive design maintained across devices,Passed,High,Layout is fully responsive,

@@ -1,0 +1,292 @@
+
+import { defineType, defineField, defineArrayMember } from 'sanity';
+
+export default createSchema({
+  name: 'default',
+  types: [
+    // Product Schema
+    defineType({
+      name: 'product',
+      title: 'Product',
+      type: 'document',
+      fields: [
+        defineField({
+          name: 'name',
+          title: 'Name',
+          type: 'string',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'slug',
+          title: 'Slug',
+          type: 'slug',
+          options: {
+            source: 'name',
+            maxLength: 200,
+          },
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'price',
+          title: 'Price',
+          type: 'number',
+          validation: (Rule) => Rule.required().positive(),
+        }),
+        defineField({
+          name: 'description',
+          title: 'Description',
+          type: 'text',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'image',
+          title: 'Image',
+          type: 'image',
+          options: {
+            hotspot: true,
+          },
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'category',
+          title: 'Category',
+          type: 'reference',
+          to: [{ type: 'category' }],
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'inStock',
+          title: 'In Stock',
+          type: 'boolean',
+          initialValue: true,
+        }),
+        defineField({
+          name: 'tags',
+          title: 'Tags',
+          type: 'array',
+          of: [{ type: 'string' }],
+          options: {
+            layout: 'tags',
+          },
+        }),
+        defineField({
+          name: 'reviews',
+          title: 'Reviews',
+          type: 'array',
+          of: [{ type: 'review' }],
+        }),
+      ],
+    }),
+
+    // Category Schema
+    defineType({
+      name: 'category',
+      title: 'Category',
+      type: 'document',
+      fields: [
+        defineField({
+          name: 'name',
+          title: 'Name',
+          type: 'string',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'slug',
+          title: 'Slug',
+          type: 'slug',
+          options: {
+            source: 'name',
+            maxLength: 200,
+          },
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'description',
+          title: 'Description',
+          type: 'text',
+        }),
+      ],
+    }),
+
+    
+    // Review Schema
+    defineType({
+      name: 'review',
+      title: 'Review',
+      type: 'document',
+      fields: [
+        defineField({
+          name: 'user',
+          title: 'User',
+          type: 'reference',
+          to: [{ type: 'user' }],
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'product',
+          title: 'Product',
+          type: 'reference',
+          to: [{ type: 'product' }],
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'rating',
+          title: 'Rating',
+          type: 'number',
+          validation: (Rule) => Rule.required().min(1).max(5),
+        }),
+        defineField({
+          name: 'comment',
+          title: 'Comment',
+          type: 'text',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'date',
+          title: 'Date',
+          type: 'datetime',
+          initialValue: new Date().toISOString(),
+        }),
+      ],
+    }),
+
+    // User Schema
+    defineType({
+      name: 'user',
+      title: 'User',
+      type: 'document',
+      fields: [
+        defineField({
+          name: 'name',
+          title: 'Name',
+          type: 'string',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'email',
+          title: 'Email',
+          type: 'string',
+          validation: (Rule) => Rule.required().email(),
+        }),
+        defineField({
+          name: 'password',
+          title: 'Password',
+          type: 'string',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'orders',
+          title: 'Orders',
+          type: 'array',
+          of: [{ type: 'reference', to: [{ type: 'order' }] }],
+        }),
+      ],
+    }),
+
+    // Order Schema
+    defineType({
+      name: 'order',
+      title: 'Order',
+      type: 'document',
+      fields: [
+        defineField({
+          name: 'user',
+          title: 'User',
+          type: 'reference',
+          to: [{ type: 'user' }],
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'products',
+          title: 'Products',
+          type: 'array',
+          of: [
+            defineArrayMember({
+              type: 'object',
+              fields: [
+                defineField({
+                  name: 'product',
+                  title: 'Product',
+                  type: 'reference',
+                  to: [{ type: 'product' }],
+                  validation: (Rule) => Rule.required(),
+                }),
+                defineField({
+                  name: 'quantity',
+                  title: 'Quantity',
+                  type: 'number',
+                  validation: (Rule) => Rule.required().min(1),
+                }),
+              ],
+            }),
+          ],
+        }),
+        defineField({
+          name: 'total',
+          title: 'Total',
+          type: 'number',
+          validation: (Rule) => Rule.required().positive(),
+        }),
+        defineField({
+          name: 'status',
+          title: 'Status',
+          type: 'string',
+          options: {
+            list: [
+              { title: 'Pending', value: 'pending' },
+              { title: 'Shipped', value: 'shipped' },
+              { title: 'Delivered', value: 'delivered' },
+              { title: 'Cancelled', value: 'cancelled' },
+            ],
+          },
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'shipment',
+          title: 'Shipment',
+          type: 'reference',
+          to: [{ type: 'shipment' }],
+        }),
+      ],
+    }),
+
+    // Shipment Schema
+    defineType({
+      name: 'shipment',
+      title: 'Shipment',
+      type: 'document',
+      fields: [
+        defineField({
+          name: 'trackingNumber',
+          title: 'Tracking Number',
+          type: 'string',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'carrier',
+          title: 'Carrier',
+          type: 'string',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'status',
+          title: 'Status',
+          type: 'string',
+          options: {
+            list: [
+              { title: 'In Transit', value: 'in_transit' },
+              { title: 'Out for Delivery', value: 'out_for_delivery' },
+              { title: 'Delivered', value: 'delivered' },
+            ],
+          },
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'estimatedDelivery',
+          title: 'Estimated Delivery',
+          type: 'datetime',
+        }),
+      ],
+    }),
+  ],
+});
